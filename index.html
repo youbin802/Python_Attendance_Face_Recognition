@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSS only -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <title>Document</title>
+    <link rel="stylesheet" href="/index.css">
+    <script src="/jquery-3.4.1.js"></script>
+</head>
+<body>
+    <header class="center">
+        <h3>얼굴 인식 출석 관리 시스템</h3>
+    </header>
+    <div class="container center">
+        <h3>출입 명단</h3> 
+        <div class="btn-wrap"><button id="downloadBtn" class="btn btn-primary">시트 다운로드</button></div>
+        
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                  <th scope="col">이름</th>
+                  <th scope="col">날짜</th>
+                </tr>
+              </thead>
+                <tbody>
+               </tbody>
+        </table>
+    </div>
+    <footer class="center">
+        copyright
+    </footer>
+    <script>
+        $(document).ready(function(){
+            // table section 다른 html 불러오기
+            $("tbody").load("section.html")
+            
+            $(".table > tbody").html("")
+            // 명단 시트 다운로드 하기
+            $("#downloadBtn").click(function() {
+                $.ajax({
+                    url: "/checkProcess.csv",
+                    type : "GET",
+                    dataType: "text",
+                    success: function(data) {
+                        const filename =   "_테스트_데이터.csv"
+                        if(data != undefined){
+                            data = "\uFEFF" +data;
+                            var blob = new Blob([data], { type: 'text/csv;charset=utf8;filename='+filename });
+                            var csvUrl = URL.createObjectURL(blob);
+                            var a = document.createElement('a');
+                            a.setAttribute('style', 'display:none');
+                            a.setAttribute('href', csvUrl);
+                            a.download="출석리스트.csv"
+                            document.body.appendChild(a);
+                            a.click()
+                        }
+                    }
+                })
+            })
+        });
+    </script>
+</body>
+</html>
